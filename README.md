@@ -4,7 +4,7 @@ I've been working with Chart.js, and have had way too much confusion reading and
 
 ---
 
-**Remove Overflowing Grid Lines**
+## Remove Overflowing Grid Lines
 
 This removes overflowing grid lines on the x and y axes that is there by default
 
@@ -52,13 +52,24 @@ Chart.plugins.register({
 })
 ```
 
-**Distance the legends from the graph**
+## Distance the legends from the graph
 
 If you find that the legends are too close to the graph, you can move them, but it's not very intuitive. Luckily it has been figured out by [jordanwillis](https://stackoverflow.com/users/7581592/jordanwillis) on [Stack Overflow](https://stackoverflow.com/a/42589310/11786802)
 
-**Remove dataset toggle when clicking legend**
+## Remove dataset toggle when clicking legend
 
 This probably isn't something that needs to be mentioned, since it's not complex or unintuitive, but I figured I would add it here since it's something I needed to use.
 ```
 Chart.defaults.global.legend.onClick = () => false
 ```
+
+## Change default legend shapes
+
+If you want the default legend rectangles to look like the points on your graphs, you can enable usePointStyle to have it mirror the shape of the points on your graph:
+
+```
+Chart.defaults.global.legend.labels.usePointStyle = true
+```
+
+There's a bunch of shapes you can choose from, all listed here:
+https://www.chartjs.org/docs/latest/configuration/elements.html#point-styles
