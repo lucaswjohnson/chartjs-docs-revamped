@@ -4,6 +4,24 @@ I've been working with Chart.js, and have had way too much confusion reading and
 
 ---
 
+## A Note on Chart globals (defaults)
+
+To keep your code neat, I would recommend creating a separate file that you import into the files that contain Charts that you want to have those global defaults. If you have many globals and plugins, this should help reduce bloat in your files and make them more DRY.
+```
+// chartConfig.js
+import Chart from 'chart.js'
+
+// Chart globals
+Chart.defaults.scale.ticks.beginAtZero = true
+Chart.defaults.global.tooltips.yAlign = 'bottom'
+...
+
+// Chart plugins
+Chart.plugins.register({
+...
+```
+You can learn more about Chart.js globals [here.](https://www.chartjs.org/docs/latest/configuration/#global-configuration)
+
 ## Remove Overflowing Grid Lines
 
 This removes overflowing grid lines on the x and y axes that is there by default
