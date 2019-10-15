@@ -2,6 +2,8 @@
 
 I've been working with Chart.js, and have had way too much confusion reading and trying to figure out the docs, so here's some things I've learned.
 
+---
+
 **Remove Overflowing Grid Lines**
 
 This removes overflowing grid lines on the x and y axes that is there by default
@@ -47,3 +49,8 @@ Chart.plugins.register({
   }
 })
 ```
+
+**Distance the legends from the graph**
+
+If you find that the legends are too close to the graph, you can move them, but it's quite verbose and has been figured out by [jordanwillis](https://stackoverflow.com/users/7581592/jordanwillis) on [Stack Overflow](https://stackoverflow.com/a/42589310/11786802)
+
