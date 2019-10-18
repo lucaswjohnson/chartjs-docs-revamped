@@ -104,3 +104,80 @@ Chart.defaults.global.tooltips.xAlign = 'center' // left, right, center
 ```
 
 If you're looking to center the tooltip in the middle of a bar graph, I suggest you take a look at [this Stack Overflow answer](https://stackoverflow.com/questions/45415925/position-tooltip-in-center-of-bar).
+
+## Further customizable tooltip positioning
+
+If you're using the default tooltip (not a custom HTML one) but want to be able to customize your tooltip positioning beyond the default options 'nearest' and 'average', you can create your own function to calculate the tooltip position.
+
+The basic customization is documented [here](https://www.chartjs.org/docs/latest/configuration/tooltip.html#position-modes), but if you want to cusomtize the 'nearest' and 'average' positioning, or simply have access to the positioning data while using these position modes, you can use one of the custom functions below that do the same thing, but give you access to the code as it's executed.
+
+Remember to put `options.tooltips.position = 'custom'` to make them work!
+
+**nearest**
+```
+// Custom 'nearest' tooltip positioning. This is does the same thing as options.tooltips.position = 'nearest'
+Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
+  var x = eventPosition.x;
+  var y = eventPosition.y;
+
+  var minDistance = Number.POSITIVE_INFINITY;
+  var i, len, nearestElement;
+
+  for (i = 0, len = elements.length; i < len; ++i) {
+    var el = elements[i];
+    if (el && el.hasValue()) {
+      var center = el.getCenterPoint();
+      // Note that Math.hypot is ES2015, so if that's not supported, calculate the distance using another method
+      // https://stackoverflow.com/questions/20916953/get-distance-between-two-points-in-canvas
+      var d = Math.hypot(center.x - eventPosition.x, center.y - eventPosition.y)
+
+      if (d < minDistance) {
+        minDistance = d;
+        nearestElement = el;
+      }
+    }
+  }
+
+  if (nearestElement) {
+    var tp = nearestElement.tooltipPosition();
+    x = tp.x;
+    y = tp.y;
+  }
+
+  return {
+    x: x,
+    y: y
+  };
+}
+```
+
+**average**
+```
+// Custom 'average' tooltip positioning. This is does the same thing as options.tooltips.position = 'average'
+Chart.Tooltip.positioners.custom = function(elements) {
+    if (!elements.length) {
+        return false;
+    }
+
+    var i, len;
+    var x = 0;
+    var y = 0;
+    var count = 0;
+
+    for (i = 0, len = elements.length; i < len; ++i) {
+        var el = elements[i];
+        if (el && el.hasValue()) {
+            var pos = el.tooltipPosition();
+            x += pos.x;
+            y += pos.y;
+            ++count;
+        }
+    }
+
+    return {
+        x: x / count,
+        y: y / count
+    };
+}
+```
+I got these functions from the Chart.js source code [here](https://codeclimate.com/github/chartjs/Chart.js/src/core/core.tooltip.js/source)
