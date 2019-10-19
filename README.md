@@ -2,6 +2,8 @@
 
 I've been working with Chart.js, and have had way too much confusion reading and trying to figure out the docs, so here's some things I've learned.
 
+Using React (or just want to get a nice overview of Chart.js)? You might find [this guide](https://blog.bitsrc.io/customizing-chart-js-in-react-2199fa81530a) helpful.
+
 ---
 
 ## A Note on Chart globals (defaults)
