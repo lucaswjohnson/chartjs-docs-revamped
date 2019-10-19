@@ -181,3 +181,66 @@ Chart.Tooltip.positioners.custom = function(elements) {
 }
 ```
 I got these functions from the Chart.js source code [here](https://codeclimate.com/github/chartjs/Chart.js/src/core/core.tooltip.js/source)
+
+## Distance legends from the graph
+
+If you'd like to distance the legends from the graph, you can use the code below, or there might be a better, less verbose solution [here.](https://stackoverflow.com/questions/42585861/chart-js-increase-spacing-between-legend-and-chart)
+
+Just change the `this.height + 40` part to change the distance.
+```
+// Chart functions and plugin to distance legends from graphs
+Chart.NewLegend = Chart.Legend.extend({
+  afterFit: function () {
+    this.height = this.height + 40 // change this to change the distance between the graph and the legends
+  }
+})
+
+const createNewLegendAndAttach = (chartInstance, legendOpts) => {
+  const legend = new Chart.NewLegend({
+    ctx: chartInstance.chart.ctx,
+    options: legendOpts,
+    chart: chartInstance
+  })
+
+  if (chartInstance.legend) {
+    Chart.layoutService.removeBox(chartInstance, chartInstance.legend)
+    delete chartInstance.newLegend
+  }
+
+  chartInstance.newLegend = legend
+  Chart.layoutService.addBox(chartInstance, legend)
+}
+
+// Register the legend plugin
+Chart.plugins.register({
+  beforeInit: (chartInstance) => {
+    const legendOpts = chartInstance.options.legend
+
+    if (legendOpts) {
+      createNewLegendAndAttach(chartInstance, legendOpts)
+    }
+  },
+  beforeUpdate: (chartInstance) => {
+    let legendOpts = chartInstance.options.legend;
+
+    if (legendOpts) {
+      legendOpts = Chart.helpers.configMerge(Chart.defaults.global.legend, legendOpts)
+
+      if (chartInstance.newLegend) {
+        chartInstance.newLegend.options = legendOpts
+      } else {
+        createNewLegendAndAttach(chartInstance, legendOpts)
+      }
+    } else {
+      Chart.layoutService.removeBox(chartInstance, chartInstance.newLegend)
+      delete chartInstance.newLegend
+    }
+  },
+  afterEvent: (chartInstance, e) => {
+    const legend = chartInstance.newLegend
+    if (legend) {
+      legend.handleEvent(e)
+    }
+  }
+})
+```
